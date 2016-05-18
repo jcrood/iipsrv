@@ -85,10 +85,13 @@ void IIPImage::testImageType() throw(file_error)
   string path = fileSystemPrefix + imagePath;
   const char *pstr = path.c_str();
 
+  //logfile << "IIPImage :: stat file" << endl;
 
   if( (stat(pstr,&sb)==0) && S_ISREG(sb.st_mode) ){
 
     unsigned char header[10];
+
+    //logfile << "IIPImage :: statted file, now fopen" << endl;
 
     // Immediately open our file to reduce (but not eliminate) TOCTOU race condition risks
     // We should really use open() before fstat() but it's not supported on Windows and
@@ -99,8 +102,13 @@ void IIPImage::testImageType() throw(file_error)
       throw file_error( message );
     }
 
+    //logfile << "IIPImage :: opened file" << endl;
+
     // Determine our file format using magic file signatures -
     // read in 10 bytes and immediately close file
+
+    //logfile << "IIPImage :: fread some magic" << endl;
+
     int len = fread( header, 1, 10, im );
     fclose( im );
 
@@ -109,6 +117,8 @@ void IIPImage::testImageType() throw(file_error)
       string message = "Unable to read initial byte sequence from file '" + path + "'";
       throw file_error( message );
     }
+
+    //logfile << "IIPImage :: find magic bits" << endl;
 
     isFile = true;
     timestamp = sb.st_mtime;
@@ -134,6 +144,8 @@ void IIPImage::testImageType() throw(file_error)
 
   }
   else{
+
+    //logfile << "IIPIMage:: coudl not stat, lets glob" << endl;
 
 #ifdef HAVE_GLOB_H
 
@@ -278,9 +290,13 @@ void IIPImage::measureHorizontalAngles()
 
 
 
-void IIPImage::Initialise()
+void IIPImage::Initialise(std::ofstream &logfile)
 {
+  logfile << "IIPImage: testing image type" << endl;
+
   testImageType();
+
+  //logfile << "IIPImage: tested, now do stuff" << endl;
 
   if( !isFile ){
     // Measure sequence angles
@@ -295,6 +311,8 @@ void IIPImage::Initialise()
     verticalAnglesList.push_front( 90 );
   }
 
+
+  //*(logfile) << "IIPImage: initialised! yay" << endl;
 }
 
 

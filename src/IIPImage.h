@@ -29,6 +29,8 @@
 #define snprintf _snprintf
 #endif
 
+#include <fstream>
+
 
 #include <string>
 #include <list>
@@ -224,7 +226,7 @@ class IIPImage {
   virtual ~IIPImage() { ; };
 
   /// Test the image and initialise some parameters
-  void Initialise();
+  void Initialise(std::ofstream &logfile);
 
   /// Swap function
   /** @param a Object to copy to

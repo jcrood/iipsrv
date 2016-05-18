@@ -84,7 +84,7 @@ void FIF::run( Session* session, const string& src ){
       test = IIPImage( argument );
       test.setFileNamePattern( filename_pattern );
       test.setFileSystemPrefix( filesystem_prefix );
-      test.Initialise();
+      test.Initialise(*(session->logfile));
     }
     // If not, look up our object
     else{
@@ -102,12 +102,15 @@ void FIF::run( Session* session, const string& src ){
 	test = IIPImage( argument );
 	test.setFileNamePattern( filename_pattern );
 	test.setFileSystemPrefix( filesystem_prefix );
-	test.Initialise();
+	if( session->loglevel >= 2 ) *(session->logfile) << "FIF :: created IIPImage -> init" << endl;
+	test.Initialise(*(session->logfile));
+	if( session->loglevel >= 2 ) *(session->logfile) << "FIF :: initialised, cleanup cache..." << endl;
 	// Delete items if our list of images is too long.
 	if( session->imageCache->size() >= MAXIMAGECACHE ) session->imageCache->erase( session->imageCache->begin() );
       }
     }
 
+  	if( session->loglevel >= 2 ) *(session->logfile) << "FIF :: on we go!" << endl;
 
 
     /***************************************************************
