@@ -80,7 +80,7 @@ class IIPImage {
   std::string suffix;
 
   /// Private function to determine the image type
-  void testImageType() throw( file_error );
+  void testImageType(std::ofstream &logfile) throw( file_error );
 
   /// If we have a sequence of images, determine which horizontal angles exist
   void measureHorizontalAngles();
