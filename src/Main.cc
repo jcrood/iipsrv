@@ -23,7 +23,8 @@
 
 
 #include <fcgiapp.h>
-
+#include <sys/time.h>
+#include <time.h>
 #include <ctime>
 #include <csignal>
 #include <iostream>
@@ -31,6 +32,7 @@
 #include <string>
 #include <utility>
 #include <map>
+#include <iomanip>
 
 #include "TPTImage.h"
 #include "JPEGCompressor.h"
@@ -491,7 +493,17 @@ int main( int argc, char *argv[] )
       }
 
       if( loglevel >=2 ){
-	logfile << "Full Request is " << request_string << endl;
+		  struct timeval tp;
+		  gettimeofday(&tp, NULL);
+		  struct tm *lt = localtime(&tp.tv_sec);
+		  
+		  //logfile << "Full Request is " << request_string << endl;
+		  
+	  	logfile << lt->tm_year + 1900 << "-" << setw(2) << setfill('0') << lt->tm_mon + 1 << "-" << std::setw(2) << std::setfill('0') << lt->tm_mday << " "
+	  		<< std::setw(2) << std::setfill('0') << lt->tm_hour << ":" << std::setw(2) << std::setfill('0') << lt->tm_min << ":" << std::setw(2) << std::setfill('0') << lt->tm_sec << "." << tp.tv_usec/1000 
+			<< " Full Request is " << request_string << std::endl;
+		  
+		  
       }
 
 
