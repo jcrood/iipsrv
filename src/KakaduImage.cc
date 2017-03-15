@@ -145,9 +145,9 @@ void KakaduImage::loadImageInfo( int seq, int ang ) throw(file_error)
   logfile << "Kakadu :: Resolution : " << w << "x" << h << endl;
 #endif
 
-  // Loop through each resolution and calculate the image dimensions - 
+  // Loop through each resolution and calculate the image dimensions -
   // We calculate ourselves rather than relying on get_dims() to force a similar
-  // behaviour to TIFF with resolutions at floor(x/2) rather than Kakadu's default ceil(x/2) 
+  // behaviour to TIFF with resolutions at floor(x/2) rather than Kakadu's default ceil(x/2)
   for( unsigned int c=1; c<numResolutions; c++ ){
     //    codestream.apply_input_restrictions(0,0,c,1,NULL,KDU_WANT_OUTPUT_COMPONENTS);
     //    kdu_dims layers;
@@ -192,8 +192,13 @@ void KakaduImage::loadImageInfo( int seq, int ang ) throw(file_error)
 
 
   // Check for a palette and LUT - only used for bilevel images for now
-  int cmp, plt, stream_id;
+  int cmp, plt, stream_id, format = 0;
+#if defined(KDU_MAJOR_VERSION) && (KDU_MAJOR_VERSION >= 7) && (KDU_MINOR_VERSION >= 8)
+  j2k_channels.get_colour_mapping(0,cmp,plt,stream_id,format);
+#else
   j2k_channels.get_colour_mapping(0,cmp,plt,stream_id);
+#endif
+
   j2k_palette = jpx_stream.access_palette();
 
   if( j2k_palette.exists() && j2k_palette.get_num_luts()>0 ){
@@ -539,7 +544,7 @@ void KakaduImage::process( unsigned int res, int layers, int xoffset, int yoffse
 
     while( continues ){
 
-      
+
       decompressor.get_recommended_stripe_heights( comp_dims.size.y,
 						   1024, stripe_heights, NULL );
 
